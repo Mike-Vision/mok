@@ -9,11 +9,12 @@
  * Optional: set GITHUB_TOKEN (e.g. in GitHub Actions) for a higher rate limit.
  * The token is only used here at build time and never reaches the browser.
  */
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
-const USER = "huy100408";
+const CONFIG = fileURLToPath(new URL("../src/config/github.json", import.meta.url));
 const OUT = fileURLToPath(new URL("../src/data/github-snapshot.json", import.meta.url));
+const { username: USER } = JSON.parse(await readFile(CONFIG, "utf8"));
 
 const headers = {
   Accept: "application/vnd.github+json",

@@ -2,15 +2,17 @@
  * Public GitHub data, fetched from the browser (GitHub Pages has no server).
  *
  * - No token: only public, unauthenticated endpoints (60 requests/hour per visitor IP).
- * - Responses are cached in sessionStorage for CACHE_TTL to stay well under that limit.
+ * - Responses are cached in localStorage for CACHE_TTL to stay well under that limit.
  * - When the API fails or is rate limited, the build-time snapshot
  *   (src/data/github-snapshot.json, written by scripts/snapshot-github.mjs) is shown instead.
  */
 import snapshot from "@/data/github-snapshot.json";
+import githubConfig from "@/config/github.json";
+import { site } from "@/config/site";
 
-export const GITHUB_USER = "huy100408";
+export const GITHUB_USER = githubConfig.username;
 const API = "https://api.github.com";
-const CACHE_KEY = `gh-cache:${GITHUB_USER}:v1`;
+const CACHE_KEY = `gh-cache:${GITHUB_USER}:v2`;
 const CACHE_TTL = 1000 * 60 * 30; // 30 minutes
 
 /* ---------- Raw shapes (only the fields we read; the snapshot script keeps the same keys) ---------- */
@@ -134,7 +136,7 @@ export function normalize(raw: RawGitHub): GitHubData {
     .sort((a, b) => +new Date(b.pushed_at) - +new Date(a.pushed_at))
     .map<Repo>((r) => ({
       name: r.name,
-      description: r.description,
+      description: r.name === "portfolio" ? `Personal portfolio of ${site.name}.` : r.description,
       language: r.language,
       stars: r.stargazers_count,
       forks: r.forks_count,
@@ -221,7 +223,7 @@ export function getSnapshot(): GitHubData | null {
 
 function readCache(): GitHubData | null {
   try {
-    const item = sessionStorage.getItem(CACHE_KEY);
+    const item = localStorage.getItem(CACHE_KEY);
     if (!item) return null;
     const parsed = JSON.parse(item) as { at: number; data: GitHubData };
     if (Date.now() - parsed.at > CACHE_TTL) return null;
@@ -233,7 +235,7 @@ function readCache(): GitHubData | null {
 
 function writeCache(data: GitHubData) {
   try {
-    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data }));
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data }));
   } catch {
     /* storage unavailable: fine, we just refetch next time */
   }
@@ -251,7 +253,7 @@ export async function fetchGitHub(
     getJSON<RawRepo[]>(`/users/${GITHUB_USER}/repos?per_page=100&sort=pushed`, opts.signal),
     // The events feed is a nice-to-have; don't fail the whole section without it.
     getJSON<RawEvent[]>(`/users/${GITHUB_USER}/events/public?per_page=100`, opts.signal).catch((err) => {
-      if (err instanceof RateLimitError) throw err;
+      if (opts.signal?.aborted) throw err;
       return [] as RawEvent[];
     }),
   ]);

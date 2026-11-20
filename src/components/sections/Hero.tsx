@@ -1,8 +1,9 @@
 "use client";
 
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { ArrowRight, ChevronDown, Mail } from "lucide-react";
-import { useRef } from "react";
+import { ArrowRight, ArrowUpRight, ChevronDown, Mail } from "lucide-react";
+import { Fragment, useRef, useState } from "react";
+import { EncryptedWord } from "@/components/motion/EncryptedWord";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { SplitText } from "@/components/motion/SplitText";
 import { useIntro } from "@/components/providers/IntroProvider";
@@ -18,12 +19,29 @@ import { scrollToSection } from "@/lib/utils";
 const socialLink =
   "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:bg-fg/5 hover:text-fg";
 
+const ctaGroup = {
+  hidden: {},
+  show: { transition: { delayChildren: 0.75, staggerChildren: 0.12 } },
+};
+
+const ctaItem = {
+  hidden: { opacity: 0, y: 18, scale: 0.97, filter: "blur(6px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 0.65, ease: ease.out },
+  },
+};
+
 export function Hero() {
   const { done } = useIntro();
   const root = useRef<HTMLElement>(null);
   const fine = useFinePointer();
   const reduce = useReducedMotionPref();
-  const [first, last] = site.name.split(" ");
+  const [nameReplay, setNameReplay] = useState(0);
+  const nameParts = site.name.split(" ");
 
   // The horizon leans gently toward the cursor.
   const px = useSpring(useMotionValue(0), spring.soft);
@@ -95,18 +113,28 @@ export function Hero() {
       </div>
 
       <div data-hero-content className="container-page flex flex-col items-center pb-36 pt-28 text-center sm:pb-40 sm:pt-32">
-        <motion.p {...appear(0.05)} className="text-shimmer text-[17px] font-semibold tracking-[-0.01em] sm:text-[24px]" data-reveal>
+        <motion.p
+          {...appear(0.05)}
+          className="inline-flex items-center gap-2 rounded-full border border-line bg-bg/60 px-4 py-2 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-muted shadow-soft backdrop-blur sm:text-xs"
+          data-reveal
+        >
+          <span aria-hidden className="size-1.5 rounded-full bg-accent shadow-[0_0_10px_var(--accent)]" />
           {site.title}
         </motion.p>
 
-        <h1 className="text-display mt-4 sm:mt-5" aria-label={site.name}>
-          <span className="block sm:inline">
-            <SplitText text={first} by="chars" effect="blur" play={done} delay={0.15} />
-          </span>
-          <span className="hidden sm:inline"> </span>
-          <span className="block sm:inline">
-            <SplitText text={last} by="chars" effect="blur" play={done} delay={0.32} />
-          </span>
+        <h1
+          className="text-display mt-4 font-[650] tracking-[-0.045em] sm:mt-5"
+          aria-label={site.name}
+          onPointerEnter={() => setNameReplay((replay) => replay + 1)}
+        >
+          {nameParts.map((part, index) => (
+            <Fragment key={`${part}-${index}`}>
+              {index > 0 && <span className="hidden sm:inline"> </span>}
+              <span className="block sm:inline">
+                <EncryptedWord text={part} active={done} delay={index * 240} replay={nameReplay} reducedMotion={reduce} />
+              </span>
+            </Fragment>
+          ))}
         </h1>
 
         <SplitText
@@ -115,39 +143,51 @@ export function Hero() {
           effect="blur"
           play={done}
           delay={0.7}
-          className="mt-6 max-w-[34ch] text-balance text-[21px] font-semibold leading-[1.2] tracking-[-0.015em] text-muted sm:mt-8 sm:text-[28px] sm:leading-[1.15]"
+          className="mt-6 max-w-[34ch] text-balance text-[21px] font-medium leading-[1.25] tracking-[-0.015em] text-muted sm:mt-8 sm:text-[28px] sm:leading-[1.2]"
         />
 
-        <motion.div {...appear(1.05)} className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:mt-12" data-reveal>
-          <Magnetic>
-            <span className="glow-ring block">
+        <motion.div
+          initial="hidden"
+          animate={done ? "show" : "hidden"}
+          variants={ctaGroup}
+          className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:mt-12"
+          data-reveal
+        >
+          <motion.div variants={ctaItem} whileHover={{ y: -3 }} whileTap={{ scale: 0.97 }}>
+            <Magnetic>
+              <span className="glow-ring block">
+                <ButtonLink
+                  href="#projects"
+                  size="lg"
+                  className="font-semibold tracking-[-0.015em] shadow-[0_8px_24px_rgb(0_113_227/0.18)] hover:shadow-[0_12px_30px_rgb(0_113_227/0.28)]"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection("projects");
+                  }}
+                  icon={<ArrowRight className="size-4 transition-transform duration-300 ease-out-expo group-hover/btn:translate-x-1" />}
+                >
+                  View Projects
+                </ButtonLink>
+              </span>
+            </Magnetic>
+          </motion.div>
+          <motion.div variants={ctaItem} whileHover={{ y: -3 }} whileTap={{ scale: 0.97 }}>
+            <Magnetic>
               <ButtonLink
-                href="#projects"
+                href="#contact"
                 size="lg"
+                variant="secondary"
+                className="bg-bg/60 font-semibold tracking-[-0.015em] backdrop-blur hover:shadow-soft"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToSection("projects");
+                  scrollToSection("contact");
                 }}
-                icon={<ArrowRight className="size-4 transition-transform duration-500 ease-out-expo group-hover/btn:translate-x-0.5" />}
+                icon={<ArrowUpRight className="size-4 transition-transform duration-300 ease-out-expo group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5" />}
               >
-                View Projects
+                Contact Me
               </ButtonLink>
-            </span>
-          </Magnetic>
-          <Magnetic>
-            <ButtonLink
-              href="#contact"
-              size="lg"
-              variant="secondary"
-              className="bg-bg/60 backdrop-blur"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToSection("contact");
-              }}
-            >
-              Contact Me
-            </ButtonLink>
-          </Magnetic>
+            </Magnetic>
+          </motion.div>
         </motion.div>
 
         <motion.ul {...appear(1.25)} className="mt-8 flex flex-wrap items-center justify-center gap-1" aria-label="Social links" data-reveal>

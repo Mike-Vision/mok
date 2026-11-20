@@ -4,7 +4,7 @@ import type { NextConfig } from "next";
  * Static export for GitHub Pages.
  *
  * NEXT_PUBLIC_BASE_PATH is set by the deploy workflow from the repository name
- * (e.g. "/portfolio"). Leave it empty for a user site (huy100408.github.io)
+ * (e.g. "/portfolio"). Leave it empty for a user site (<user>.github.io)
  * and for local development.
  */
 const basePath = (process.env.NEXT_PUBLIC_BASE_PATH ?? "").replace(/\/$/, "");

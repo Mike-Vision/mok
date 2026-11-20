@@ -1,19 +1,21 @@
+import githubConfig from "./github.json";
+
 /**
  * Site-wide personal information.
  * Everything here is shown publicly. Only add details you want on the site.
  */
 export const site = {
-  name: "Brian Nguyen",
-  shortName: "BN",
+  name: "Ryan Brain Dev",
+  shortName: "RBD",
   title: "Developer & Software Engineer",
   intro: "I create modern applications and intelligent solutions through code.",
   description:
-    "Explore Brian Nguyen's portfolio, software projects, technologies, and development journey.",
+    "Explore Ryan Brain Dev's portfolio, software projects, technologies, and development journey.",
   /** Public URL of the deployed site. The deploy workflow sets NEXT_PUBLIC_SITE_URL. */
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   github: {
-    username: "huy100408",
-    url: "https://github.com/huy100408",
+    username: githubConfig.username,
+    url: `https://github.com/${githubConfig.username}?tab=repositories`,
   },
   email: "huy73213@gmail.com",
   discord: "huy100408",

@@ -7,7 +7,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { gsap, mq, useGSAP } from "@/lib/gsap";
 
 const statement =
-  "I'm Brian, a developer who likes turning ideas into working software. I build modern applications, experiment with artificial intelligence, and enjoy the moment code starts moving things in the real world.";
+  "I build to make ideas useful. I follow a question from the first rough idea through the details that make software clear, dependable, and worth using.";
 
 const interests: { title: string; text: string }[] = [
   { title: "Software engineering", text: "Writing code that is clear, tested and easy to change." },
@@ -116,10 +116,21 @@ export function About() {
               </span>
             ))}
           </p>
-          <p className="mt-10 max-w-2xl text-pretty text-[17px] leading-[1.47] text-muted sm:text-[21px] sm:leading-[1.38]">
-            I learn by building. Each project is a chance to pick up a new tool, understand it properly and ship
-            something people can use, from AI assistants to study apps.
-          </p>
+          <div className="mt-10 max-w-3xl space-y-5 text-pretty text-[17px] leading-[1.55] text-muted sm:text-[20px] sm:leading-[1.5]">
+            <p>
+              My best way to learn is to make something real. I built Jarvis AI, an assistant that can see and operate a
+              desktop with human approval, and Nakano Academy, a study app designed to make practice feel more personal.
+              They solve different problems, but both start with the same question: how can technology help someone do
+              something more easily?
+            </p>
+            <p>
+              I care about more than getting a demo to work. I want to understand the system underneath it, make the
+              interface feel thoughtful, and stay with the hard parts until the result is dependable. That means moving
+              between design, code, testing, and learning new tools when a project calls for them. I’m still early in my
+              journey, and I want every project to leave me more capable—and leave the person using it with something
+              genuinely useful.
+            </p>
+          </div>
         </div>
 
         <h3 className="text-h3 mt-24 sm:mt-36">What I work on.</h3>

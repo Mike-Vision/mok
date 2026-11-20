@@ -45,6 +45,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://www.youtube.com" />
+        <link rel="preconnect" href="https://www.youtube-nocookie.com" />
+        <link rel="preconnect" href="https://www.googlevideo.com" crossOrigin="anonymous" />
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
         <noscript>
           <style>{`#intro-loader{display:none!important}[data-reveal],[data-reveal] *{opacity:1!important;transform:none!important;filter:none!important}`}</style>

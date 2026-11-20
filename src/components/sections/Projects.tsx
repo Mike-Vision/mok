@@ -99,23 +99,24 @@ export function Projects() {
       <div className="container-page">
         <SectionHeading
           label="Projects"
-          title="Selected work."
-          description="Open any project for the full story, screenshots and links."
+          title="Public repositories."
+          description="Browse my public projects on GitHub."
           align="split"
         />
 
-        <div className="relative">
-          {projects.map((p, i) => (
-            <Fragment key={p.slug}>
-              <div data-stack-mark aria-hidden className={i === 0 ? "h-0" : "h-[10svh] lg:h-[28svh]"} />
-              <div data-stack-card className="stack-card" style={{ "--i": i } as React.CSSProperties}>
-                <ProjectCard project={p} index={i} total={projects.length} onOpen={setOpenSlug} />
-              </div>
-            </Fragment>
-          ))}
-          {/* Holds the finished deck on screen for a moment before it scrolls away. */}
-          <div data-stack-mark aria-hidden className="h-[6svh] lg:h-[14svh]" />
-        </div>
+        {projects.length > 0 && (
+          <div className="relative">
+            {projects.map((p, i) => (
+              <Fragment key={p.slug}>
+                <div data-stack-mark aria-hidden className={i === 0 ? "h-0" : "h-[10svh] lg:h-[28svh]"} />
+                <div data-stack-card className="stack-card" style={{ "--i": i } as React.CSSProperties}>
+                  <ProjectCard project={p} index={i} total={projects.length} onOpen={setOpenSlug} />
+                </div>
+              </Fragment>
+            ))}
+            <div data-stack-mark aria-hidden className="h-[6svh] lg:h-[14svh]" />
+          </div>
+        )}
 
         <motion.a
           href={site.github.url}
@@ -133,7 +134,7 @@ export function Projects() {
               <BrandIcon name="github" className="size-6 sm:size-7" />
             </span>
             <span className="min-w-0">
-              <span className="block text-[21px] font-semibold tracking-[-0.02em] sm:text-[28px]">More on GitHub</span>
+              <span className="block text-[21px] font-semibold tracking-[-0.02em] sm:text-[28px]">Your Repositories</span>
               <span className="block truncate text-[15px] text-muted sm:text-[17px]">github.com/{site.github.username}</span>
             </span>
           </span>

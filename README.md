@@ -1,6 +1,6 @@
-# Brian Nguyen — Portfolio
+# Ryan Brain Dev — Portfolio
 
-Personal portfolio for **Brian Nguyen**, Developer & Software Engineer.
+Personal portfolio for **Ryan Brain Dev**, Developer & Software Engineer.
 A single-page site with a minimal design and a full motion system. It is exported as static files, so it can be hosted on GitHub Pages or Vercel.
 
 ## Stack
@@ -29,7 +29,7 @@ npm run dev          # http://localhost:3000
 | `npm run build` | Refreshes the GitHub snapshot, then builds the static site into `out/`. |
 | `npm run preview` | Serves `out/` locally. |
 | `npm run lint` | ESLint. |
-| `npm run typecheck` | TypeScript with no output. |
+| `npm run typecheck` | Generates Next.js route types, then runs TypeScript with no output. |
 | `npm run snapshot` | Refreshes `src/data/github-snapshot.json` only. |
 
 ## Editing content
@@ -38,8 +38,9 @@ All content lives in `src/config/`. You don't need to touch any components to ch
 
 | File | Contents |
 | --- | --- |
-| `site.ts` | Name, title, intro, email, Discord, GitHub, LinkedIn (`null` hides it), navigation |
-| `projects.ts` | The five projects. Entries marked `needsInfo: true` are placeholders; see the TODO comments |
+| `site.ts` | Name, title, intro, email, Discord, LinkedIn (`null` hides it), navigation |
+| `github.json` | GitHub username and profile URL source, shared by the site and build-time snapshot |
+| `projects.ts` | Projects featured on the site; the GitHub section links to the complete public repository list |
 | `skills.ts` | Skill categories and icons |
 | `journey.ts` | Timeline milestones |
 | `education.ts` | Education. The section is hidden while the list is empty |
@@ -52,7 +53,7 @@ Project screenshots go in `src/assets/projects/` and are imported in `projects.t
 The GitHub section calls the public GitHub REST API from the visitor's browser, without a token:
 
 - It fetches only when the section is about to scroll into view.
-- Responses are cached in `sessionStorage` for 30 minutes.
+- Responses are cached in `localStorage` for 30 minutes, including across browser sessions.
 - Without a token, the API allows 60 requests per hour per IP. When that limit is reached, the section shows the reset time and falls back to the snapshot.
 - The snapshot (`src/data/github-snapshot.json`) is written by `scripts/snapshot-github.mjs` before every build. If that request fails, the previous snapshot is kept.
 - The build can use an optional `GITHUB_TOKEN` for a higher rate limit. It is used only by the build script and never sent to the browser.
@@ -65,7 +66,7 @@ All are optional. See `.env.example`.
 
 | Variable | Used for |
 | --- | --- |
-| `NEXT_PUBLIC_BASE_PATH` | Sub-path the site is served from, e.g. `/portfolio` for `https://huy100408.github.io/portfolio/`. Leave empty for a root domain or Vercel. |
+| `NEXT_PUBLIC_BASE_PATH` | Sub-path the site is served from, e.g. `/portfolio` for `https://<user>.github.io/portfolio/`. Leave empty for a root domain or Vercel. |
 | `NEXT_PUBLIC_SITE_URL` | Full public URL, used for Open Graph metadata. |
 | `GITHUB_TOKEN` | Build time only: higher API limit for the snapshot script. |
 
@@ -82,7 +83,7 @@ The workflow in `.github/workflows/deploy.yml` builds and deploys the site on ev
 The workflow reads the base path from `actions/configure-pages`:
 
 - A repository named `portfolio` is served from `/portfolio`.
-- A repository named `huy100408.github.io` is served from the root.
+- A repository named `<user>.github.io` is served from the root.
 
 You don't need to configure either case by hand.
 

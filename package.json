@@ -1,5 +1,5 @@
 {
-  "name": "brian-nguyen-portfolio",
+  "name": "ryan-brain-dev-portfolio",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "next build",
     "preview": "npx serve@latest out",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

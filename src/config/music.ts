@@ -3,10 +3,10 @@
  * visible on the page (see the Soundtrack section), so the source is always shown.
  */
 export const soundtrack = {
-  videoId: "cEE1gFOvUlM",
+  videoId: "a4tdS3IB294",
   title: "Earrings",
   artist: "Malcolm Todd",
-  url: "https://www.youtube.com/watch?v=cEE1gFOvUlM",
+  url: "https://www.youtube.com/watch?v=a4tdS3IB294",
   /** 0–100. Kept low so it sits behind the page. */
   volume: 40,
 } as const;

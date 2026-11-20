@@ -227,6 +227,19 @@ body {
   55%, 100% { opacity: 0; }
 }
 
+@keyframes decode-jitter {
+  0%, 100% { transform: translateX(0); clip-path: inset(0); }
+  25% { transform: translateX(-2px) skewX(-1deg); clip-path: inset(0 0 48%); }
+  50% { transform: translateX(2px) skewX(1deg); clip-path: inset(44% 0 0); }
+  75% { transform: translateX(-1px); clip-path: inset(0); }
+}
+
+.encrypted-word[data-decoding="true"] {
+  color: var(--fg);
+  text-shadow: 3px 0 rgb(41 151 255 / 0.85), -3px 0 rgb(244 114 182 / 0.8);
+  animation: decode-jitter 120ms steps(2, end) 10;
+}
+
 .animate-float { animation: float 5s ease-in-out infinite; }
 .caret-blink { animation: caret 1.05s steps(1) infinite; }
 .animate-drift { animation: drift 22s ease-in-out infinite; }
@@ -365,7 +378,7 @@ body {
   grid-area: 1 / 1;
 }
 .origin-stage[data-animated] .origin-photo {
-  width: min(30rem, 80vw, 54svh);
+  width: min(24rem, 72vw, 54svh);
   margin-bottom: 8svh;
 }
 /* Kept clear of the floating music player at the bottom of the screen. */
@@ -419,7 +432,8 @@ html[data-intro="seen"] #intro-loader {
   .eq-on .eq-bar,
   .caret-blink,
   .glow-ring::before,
-  .glow-ring::after {
+  .glow-ring::after,
+  .encrypted-word[data-decoding="true"] {
     animation: none !important;
   }
   #intro-loader {

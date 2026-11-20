@@ -80,7 +80,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
 
     const created = loadYouTubeApi().then(
       (YT) =>
-        new Promise<YTPlayer>((resolve) => {
+        new Promise<YTPlayer>((resolve, reject) => {
           // YouTube replaces this node with its iframe. React never renders children into the host,
           // so it never fights over these nodes.
           const mount = document.createElement("div");
@@ -122,7 +122,12 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
                 }
               },
               onAutoplayBlocked: () => update("blocked"),
-              onError: () => update("error"),
+              onError: () => {
+                player.current = null;
+                pending.current = null;
+                update("error");
+                reject(new Error("The YouTube player could not load this video"));
+              },
             },
           });
         }),
@@ -136,8 +141,8 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   }, [update, watchForBlock]);
 
   const load = useCallback(() => {
-    ensurePlayer().catch(() => {});
-  }, [ensurePlayer]);
+    ensurePlayer().catch(() => update("error"));
+  }, [ensurePlayer, update]);
 
   const play = useCallback(() => {
     wantPlay.current = true;
@@ -187,18 +192,15 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     return stop;
   }, [play]);
 
-  // Preload the player after the intro, while the browser is idle, so the first click starts music quickly.
+  // Warm up the player as soon as the intro ends so the first click has less startup latency.
   useEffect(() => {
     if (!done || readPref() === "off") return;
     const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
     if (saveData) return;
     let idle = 0;
-    const t = window.setTimeout(() => {
-      if ("requestIdleCallback" in window) idle = window.requestIdleCallback(load, { timeout: 4000 });
-      else load();
-    }, 2500);
+    if ("requestIdleCallback" in window) idle = window.requestIdleCallback(load, { timeout: 1200 });
+    else load();
     return () => {
-      window.clearTimeout(t);
       if (idle) window.cancelIdleCallback(idle);
     };
   }, [done, load]);

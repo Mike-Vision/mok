@@ -17,8 +17,8 @@ export const site = {
     username: githubConfig.username,
     url: `https://github.com/${githubConfig.username}?tab=repositories`,
   },
-  email: "huy73213@gmail.com",
-  discord: "huy100408",
+  email: "fairgook123@gmail.com",
+  discord: "mouzjwid",
   /** Not provided yet. Set to a full URL to show it in the hero, contact and footer. */
   linkedin: null as string | null,
 } as const;

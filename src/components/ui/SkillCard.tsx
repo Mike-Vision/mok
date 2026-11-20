@@ -1,14 +1,19 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import type { SkillCategory } from "@/config/skills";
 import { BrandIcon, brandColor } from "@/lib/brand-icons";
-import { ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const chip = {
-  hidden: { opacity: 0, y: 14, scale: 0.9 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: ease.out } },
+const chip: Variants = {
+  hidden: { opacity: 0, y: 18, scale: 0.84, rotate: -3 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotate: 0,
+    transition: { type: "spring", stiffness: 320, damping: 22 },
+  },
 };
 
 export function SkillCard({ category, index, className }: { category: SkillCategory; index: number; className?: string }) {
@@ -38,18 +43,21 @@ export function SkillCard({ category, index, className }: { category: SkillCateg
               className="animate-float inline-block"
               style={{ animationDelay: `${-(i * 0.7 + index * 1.3)}s`, animationDuration: `${5 + (i % 3)}s` }}
             >
-              <span
-                className="group/chip inline-flex items-center gap-2 rounded-full bg-bg px-3.5 py-2 text-[14px] font-medium transition-[translate,box-shadow] duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-soft"
+              <motion.span
+                whileHover={{ y: -4, scale: 1.06 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 420, damping: 20 }}
+                className="skill-chip group/chip relative isolate inline-flex items-center gap-2 overflow-hidden rounded-full border border-line/60 bg-bg px-3.5 py-2 text-[14px] font-medium transition-[border-color,box-shadow] duration-300 hover:border-[var(--brand)] hover:shadow-soft"
                 style={{ "--brand": brandColor(s.icon) ?? "var(--fg)" } as React.CSSProperties}
               >
                 {s.icon && (
                   <BrandIcon
                     name={s.icon}
-                    className="size-4 text-muted transition-[color,rotate,scale] duration-300 group-hover/chip:rotate-[-8deg] group-hover/chip:scale-110 group-hover/chip:text-[var(--brand)]"
+                    className="relative z-10 size-4 text-muted transition-[color,rotate,scale] duration-300 group-hover/chip:rotate-[-8deg] group-hover/chip:scale-110 group-hover/chip:text-[var(--brand)]"
                   />
                 )}
-                {s.name}
-              </span>
+                <span className="relative z-10">{s.name}</span>
+              </motion.span>
             </span>
           </motion.li>
         ))}

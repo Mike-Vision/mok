@@ -355,6 +355,20 @@ body {
 .spotlight:hover::after {
   opacity: 1;
 }
+.skill-chip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at 28% 0%, color-mix(in srgb, var(--brand) 24%, transparent), transparent 78%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.skill-chip:hover::before {
+  opacity: 1;
+}
 @media (hover: none) {
   .spotlight::before,
   .spotlight::after {

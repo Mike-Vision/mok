@@ -1,0 +1,428 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+/* Wide, tall-enough screens that allow motion: where the About scene pins its stage. */
+@custom-variant cap-wide (@media (min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference));
+
+/* ---------------------------------------------------------------
+   Design tokens
+   Any element with the `dark` class switches its whole subtree to the
+   dark palette, so single sections can be dark in light mode.
+---------------------------------------------------------------- */
+:root {
+  --bg: #ffffff;
+  --bg-2: #f5f5f7;
+  --bg-3: #e8e8ed;
+  --fg: #1d1d1f;
+  --muted: #6e6e73;
+  --line: #e0e0e5;
+  --line-strong: #c7c7cc;
+  --accent: #0066cc;
+  --accent-soft: rgb(0 113 227 / 0.08);
+  --cta: #0071e3;
+  --cta-hover: #0077ed;
+  --glass: 255 255 255;
+  --brand-1: #0071e3;
+  --brand-2: #8b5cf6;
+  --brand-3: #e3418b;
+  --brand-4: #ff8a3d;
+  --sheen: 255 255 255;
+  --sheen-a: 0.95;
+  --shadow: 0 2px 6px rgb(0 0 0 / 0.04), 0 12px 32px -12px rgb(0 0 0 / 0.14);
+  --shadow-lg: 0 4px 12px rgb(0 0 0 / 0.05), 0 30px 70px -24px rgb(0 0 0 / 0.28);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #000000;
+  --bg-2: #161617;
+  --bg-3: #232325;
+  --fg: #f5f5f7;
+  --muted: #86868b;
+  --line: #2c2c2e;
+  --line-strong: #424245;
+  --accent: #2997ff;
+  --accent-soft: rgb(41 151 255 / 0.12);
+  --glass: 22 22 23;
+  --brand-1: #2997ff;
+  --brand-2: #a78bfa;
+  --brand-3: #f472b6;
+  --brand-4: #fb923c;
+  --sheen-a: 0.07;
+  --shadow: 0 2px 6px rgb(0 0 0 / 0.5), 0 12px 32px -12px rgb(0 0 0 / 0.7);
+  --shadow-lg: 0 4px 12px rgb(0 0 0 / 0.5), 0 30px 70px -24px rgb(0 0 0 / 0.9);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-bg-3: var(--bg-3);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-cta: var(--cta);
+  --color-cta-hover: var(--cta-hover);
+  --color-brand-1: var(--brand-1);
+  --color-brand-2: var(--brand-2);
+  --color-brand-3: var(--brand-3);
+  --color-brand-4: var(--brand-4);
+  /* System UI first (San Francisco on Apple devices), Geist everywhere else. */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", var(--font-geist-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, var(--font-geist-mono), Menlo, monospace;
+  --radius-tile: 1.75rem;
+  --shadow-soft: var(--shadow);
+  --shadow-lift: var(--shadow-lg);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-apple: cubic-bezier(0.28, 0.11, 0.32, 1);
+}
+
+/* ---------------------------------------------------------------
+   Base
+---------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  letter-spacing: -0.011em;
+  overflow-x: clip;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+::selection {
+  background: rgb(0 113 227 / 0.22);
+}
+
+:focus-visible {
+  outline: 2px solid var(--cta);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------------------------------------------------------------
+   Utilities
+---------------------------------------------------------------- */
+@utility container-page {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
+  @media (width >= 64rem) {
+    padding-inline: 2.5rem;
+  }
+}
+
+@utility text-display {
+  font-size: clamp(3.5rem, 12.5vw, 9.5rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+}
+
+@utility text-h2 {
+  font-size: clamp(2.5rem, 6.2vw, 5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+@utility text-h3 {
+  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(90deg, var(--brand-1), var(--brand-2) 55%, var(--brand-3));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glass {
+  background-color: rgb(var(--glass) / 0.72);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Faint dot grid for the black graphic stages. */
+@utility stage-dots {
+  background-image: radial-gradient(rgb(245 245 247 / 0.09) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  background-position: center;
+  -webkit-mask-image: radial-gradient(75% 75% at 50% 50%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(75% 75% at 50% 50%, #000 40%, transparent 100%);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Keyframes (CSS-only motion: cheap, mostly off the main thread)
+---------------------------------------------------------------- */
+@keyframes float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -6px, 0); }
+}
+
+@keyframes drift {
+  0% { transform: translate3d(-4%, -3%, 0) scale(1); }
+  50% { transform: translate3d(5%, 4%, 0) scale(1.08); }
+  100% { transform: translate3d(-4%, -3%, 0) scale(1); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes marquee {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+@keyframes eq {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.06); }
+}
+
+@keyframes caret {
+  0%, 45% { opacity: 1; }
+  55%, 100% { opacity: 0; }
+}
+
+.animate-float { animation: float 5s ease-in-out infinite; }
+.caret-blink { animation: caret 1.05s steps(1) infinite; }
+.animate-drift { animation: drift 22s ease-in-out infinite; }
+.animate-spin-slow { animation: spin 28s linear infinite; }
+.animate-marquee { animation: marquee 40s linear infinite; }
+.animate-breathe { animation: breathe 6s ease-in-out infinite; }
+
+.marquee:hover .animate-marquee { animation-play-state: paused; }
+
+/* Multi-colour text that slowly flows. */
+.text-shimmer {
+  background-image: linear-gradient(90deg, var(--brand-1), var(--brand-2), var(--brand-3), var(--brand-4), var(--brand-2), var(--brand-1));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 9s linear infinite;
+}
+
+/* Equalizer bars for the music player. */
+.eq-bar {
+  transform: scaleY(0.3);
+  transform-origin: bottom;
+}
+.eq-on .eq-bar {
+  animation: eq 0.9s ease-in-out infinite;
+}
+
+/* The glowing horizon behind the hero and contact headline. */
+.aurora-ring {
+  background: conic-gradient(from 0deg, var(--brand-1), var(--brand-2), var(--brand-3), var(--brand-4), #ffd60a, var(--brand-1));
+  -webkit-mask-image: radial-gradient(closest-side, transparent 70%, #000 83%, transparent 100%);
+  mask-image: radial-gradient(closest-side, transparent 70%, #000 83%, transparent 100%);
+}
+.aurora-haze {
+  background: conic-gradient(from 180deg, var(--brand-1), var(--brand-2), var(--brand-3), var(--brand-4), var(--brand-1));
+  -webkit-mask-image: radial-gradient(closest-side, transparent 45%, #000 80%, transparent 100%);
+  mask-image: radial-gradient(closest-side, transparent 45%, #000 80%, transparent 100%);
+}
+
+/* Rotating angle for conic gradients. A registered property so it can animate. */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes border-spin {
+  to { --angle: 360deg; }
+}
+
+/* Glowing, rotating colour ring around pills (primary buttons, the music player). */
+.glow-ring {
+  position: relative;
+  isolation: isolate;
+  border-radius: 9999px;
+}
+.glow-ring::before,
+.glow-ring::after {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  z-index: -1;
+  background: conic-gradient(from var(--angle), var(--brand-1), var(--brand-2), var(--brand-3), var(--brand-4), var(--brand-1));
+  animation: border-spin 4s linear infinite;
+  pointer-events: none;
+}
+.glow-ring::after {
+  inset: 2px;
+  z-index: -2;
+  filter: blur(14px);
+  opacity: 0.5;
+  transition: opacity 0.4s ease;
+}
+.glow-ring:hover::after {
+  opacity: 0.85;
+}
+
+/* Cursor spotlight for tiles: a soft sheen under the content and a light
+   that runs along the border. SpotlightTracker sets --sx/--sy. */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(520px circle at var(--sx, 50%) var(--sy, 50%), rgb(var(--sheen) / var(--sheen-a)), transparent 45%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: radial-gradient(280px circle at var(--sx, 50%) var(--sy, 50%), var(--brand-1), transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.spotlight:hover::before,
+.spotlight:hover::after {
+  opacity: 1;
+}
+@media (hover: none) {
+  .spotlight::before,
+  .spotlight::after {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Origin section. A stacked layout by default (reduced motion, no JS);
+   when GSAP builds the pinned scene it sets data-animated and the pieces
+   are layered in one full-screen cell.
+---------------------------------------------------------------- */
+.origin-stage[data-animated] .origin-inner {
+  display: grid;
+  height: 100svh;
+  place-items: center;
+  gap: 0;
+  padding-block: 0;
+}
+.origin-stage[data-animated] .origin-inner > * {
+  grid-area: 1 / 1;
+}
+.origin-stage[data-animated] .origin-photo {
+  width: min(30rem, 80vw, 54svh);
+  margin-bottom: 8svh;
+}
+/* Kept clear of the floating music player at the bottom of the screen. */
+.origin-stage[data-animated] .origin-caption {
+  align-self: end;
+  margin-bottom: max(9svh, 6rem);
+}
+
+/* ---------------------------------------------------------------
+   About: until GSAP takes over the pinned stage, only the first
+   graphic shows (GSAP sets inline opacity on every layer).
+---------------------------------------------------------------- */
+[data-cap-desktop] [data-cap-art]:not([data-cap-art="0"]) {
+  opacity: 0;
+}
+
+/* ---------------------------------------------------------------
+   Projects: a deck of cards that stick and stack as you scroll.
+   Each card stops a little lower than the last, so the edges of earlier
+   cards stay visible. A card taller than the screen stops with its
+   bottom on screen instead (--h is its height, set from JS).
+---------------------------------------------------------------- */
+.stack-card {
+  position: sticky;
+  top: min(calc(3.75rem + var(--i, 0) * 0.625rem), calc(100svh - var(--h, 0px) - 1rem));
+}
+@media (width >= 64rem) {
+  .stack-card {
+    top: min(calc(4.5rem + var(--i, 0) * 0.875rem), calc(100svh - var(--h, 0px) - 1rem));
+  }
+}
+
+/* ---------------------------------------------------------------
+   Intro loader: hidden immediately for returning visitors in this session
+   (an inline script in <head> sets data-intro="seen" before first paint).
+---------------------------------------------------------------- */
+html[data-intro="seen"] #intro-loader {
+  display: none;
+}
+
+/* ---------------------------------------------------------------
+   Reduced motion: stop decorative loops entirely.
+---------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-drift,
+  .animate-spin-slow,
+  .animate-marquee,
+  .animate-breathe,
+  .text-shimmer,
+  .eq-on .eq-bar,
+  .caret-blink,
+  .glow-ring::before,
+  .glow-ring::after {
+    animation: none !important;
+  }
+  #intro-loader {
+    display: none;
+  }
+}
